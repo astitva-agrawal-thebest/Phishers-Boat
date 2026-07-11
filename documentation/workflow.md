@@ -58,33 +58,43 @@ sequenceDiagram
     participant VT as VirusTotal API
 
     User->>+Popup: Enter URL and click Scan
-    Popup->>+Popup: Validate URL format
-    Popup->>+Background: sendMessage({action: 'scanExternalUrl', url})
-    
+    Popup->>Popup: Validate URL format
+    Popup->>+Background: sendMessage(scanExternalUrl)
+
     par Local Analysis
-        Background->>+Background: analyzeWithLocalModel(url, url)
-        Background-->>-Background: Local result
+        Background->>Background: Analyze URL locally
+        Background-->>Background: Local analysis result
     and Cloud Analysis
-        Background->>+Backend: HTTP POST /api/url-reputation
+        Background->>+Backend: POST /api/url-reputation
         Backend->>+VT: GET /api/v3/urls/{id}
         VT-->>-Backend: JSON response
-        Backend-->>-Background: Formatted JSON
+        Backend-->>-Background: Reputation result
     end
-    
-    Background->>+Background: Combine results (same logic as auto-scan)
+
+    Background->>Background: Combine local and cloud results
     Background-->>-Popup: Return combined result
-    Popup->>+Popup: Render detailed result with:
-        - Threat level and explanation
-        - Vendor breakdown (if available)
-        - Action buttons (trust/block for session)
-        - Link to full report
+
+    Popup->>Popup: Render threat level
+    Popup->>Popup: Render explanation
+    Popup->>Popup: Render vendor breakdown
+    Popup->>Popup: Render Trust and Block buttons
+    Popup->>Popup: Render report link
+
     Popup-->>-User: Display scan results
-    User->>+Popup: Optional actions (trust/block, view report)
-    alt User chooses to trust/block
-        Popup->>+Background: Update session lists via messaging
-        Background->>+Background: Modify session storage arrays
-        Background-->>-Background: Update statistics if blocking
-        Background->>+Popup: Confirm action completed
+
+    User->>+Popup: Select optional action
+
+    alt Trust URL
+        Popup->>+Background: Add URL to trusted list
+        Background->>Background: Update session storage
+        Background-->>-Popup: Success
+    else Block URL
+        Popup->>+Background: Add URL to blocked list
+        Background->>Background: Update session storage
+        Background->>Background: Update statistics
+        Background-->>-Popup: Success
+    else View Report
+        Popup-->>User: Open detailed report
     end
 ```
 
@@ -187,31 +197,31 @@ sequenceDiagram
     participant Content as Content Script
     participant Background as Background Service Worker
     participant Backend as Backend Server
+    participant Popup
 
-    User->>+Content: Navigate to URL
-    Content->>+Content: Extract page data
-    Content->>+Background: sendMessage({action: 'checkPageContent', content})
-    
-    Background->>+Background: Start local analysis
-    Background->>+Background: analyzeWithLocalModel(content, url)
-    Background-->>-Background: Local result
-    
-    Background->>+Backend: HTTP POST /api/url-reputation
+    User->>Content: Navigate to URL
+    Content->>Content: Extract page data
+    Content->>Background: sendMessage({action: "checkPageContent", content})
+
+    Background->>Background: Start local analysis
+    Background->>Background: analyzeWithLocalModel(content, url)
+
+    Background->>Backend: HTTP POST /api/url-reputation
+
     alt Backend/Network Failure
-        Backend-->>-Background: Error/timeout
-        Background->>+Background: Log error and mark cloud unavailable
-        Background->>+Background: Use local result only with degraded notice
-        Background->>+Content: showBanner(reason, 'warning')  // Yellow for degraded
-        Background->>+Popup: Update badge to yellow with indicator
+        Backend-->>Background: Error / Timeout
+        Background->>Background: Log error and mark cloud unavailable
+        Background->>Background: Use local result with degraded notice
+        Background->>Content: Show warning banner (yellow)
+        Background->>Popup: Update badge (yellow)
     else Backend Success
-        Backend-->>-Background: Valid response
-        Background->>+Background: finalizeVerdict(result, cloudResult)
-        Background->>+Background: Normal processing continues
+        Backend-->>Background: Valid response
+        Background->>Background: finalizeVerdict(localResult, cloudResult)
     end
-    
-    Background->>+Background: Update statistics and cache
-    Background->>+Content: Display appropriate banner
-    Background->>+Popup: Update toolbar badge
+
+    Background->>Background: Update statistics and cache
+    Background->>Content: Display final banner
+    Background->>Popup: Update toolbar badge
 ```
 
 ## Workflow Notes
