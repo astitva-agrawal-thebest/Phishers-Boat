@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+#phishing-defender-banner {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-150%);
+  width: auto;
+  min-width: 450px;
+  max-width: 90%;
+  z-index: 2147483647;
+  font-family: 'Inter', sans-serif;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  background: rgba(10, 14, 20, 0.85);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  animation: slideDownGlass 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  box-sizing: border-box;
+  display: flex;
+  align-items: stretch;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+
+/* Base Uniform Styles */
+.phishing-banner-content {
+  display: flex;
+  align-items: center;
+  padding: 14px 20px;
+  gap: 16px;
+  flex-grow: 1;
+}
+
+.banner-safe { box-shadow: 0 10px 40px rgba(57, 255, 106, 0.15); border: 1px solid rgba(57, 255, 106, 0.3); }
+.banner-danger { box-shadow: 0 10px 40px rgba(255, 56, 96, 0.15); border: 1px solid rgba(255, 56, 96, 0.3); }
+.banner-warning { box-shadow: 0 10px 40px rgba(255, 201, 60, 0.15); border: 1px solid rgba(255, 201, 60, 0.3); }
+.banner-piracy { box-shadow: 0 10px 40px rgba(255, 46, 136, 0.15); border: 1px solid rgba(255, 46, 136, 0.3); }
+
+#phishing-defender-banner.fade-out {
+  animation: fadeOutGlass 0.3s forwards;
+}
+
+#phishing-defender-banner:focus { outline: none; }
+
+.phishing-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+}
+.banner-danger .phishing-icon { color: #FF3860; filter: drop-shadow(0 0 8px rgba(255, 56, 96, 0.5)); }
+.banner-safe .phishing-icon { color: #39FF6A; filter: drop-shadow(0 0 8px rgba(57, 255, 106, 0.5)); }
+.banner-warning .phishing-icon { color: #FFC93C; filter: drop-shadow(0 0 8px rgba(255, 201, 60, 0.5)); }
+.banner-piracy .phishing-icon { color: #FF2E88; filter: drop-shadow(0 0 8px rgba(255, 46, 136, 0.5)); }
+
+.phishing-text {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.phishing-text strong {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 2px;
+  letter-spacing: 0.2px;
+}
+.banner-danger .phishing-text strong { color: #FF3860; }
+.banner-safe .phishing-text strong { color: #39FF6A; }
+.banner-warning .phishing-text strong { color: #FFC93C; }
+.banner-piracy .phishing-text strong { color: #FF2E88; }
+
+.phishing-text span {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.4;
+}
+
+/* Pixel Mascot Container inside the Pill */
+.mascot-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 16px;
+  border-left: 1px solid rgba(255,255,255,0.1);
+}
+
+.pixel-mascot {
+  width: 32px;
+  height: 32px;
+  animation: mascotBob 2s infinite ease-in-out;
+}
+
+#phishing-dismiss-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 16px 16px 0;
+  transition: all 0.2s;
+}
+
+#phishing-dismiss-btn:hover, #phishing-dismiss-btn:focus-visible {
+  color: #E8ECEF;
+  background: rgba(255,255,255,0.05);
+  outline: none;
+}
+
+@keyframes slideDownGlass {
+  from { transform: translateX(-50%) translateY(-150%); opacity: 0; }
+  to { transform: translateX(-50%) translateY(0); opacity: 1; }
+}
+
+@keyframes fadeOutGlass {
+  from { transform: translateX(-50%) translateY(0); opacity: 1; }
+  to { transform: translateX(-50%) translateY(-20px); opacity: 0; }
+}
+
+@keyframes mascotBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+/* Accessibility: Respect user motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  #phishing-defender-banner, .pixel-mascot { animation: none !important; transform: translateX(-50%) translateY(0) !important; }
+  #phishing-defender-banner.fade-out { display: none; }
+}

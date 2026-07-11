@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="header">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 128 128" fill="none" aria-hidden="true">
+        <defs>
+          <linearGradient id="shieldGrad" x1="16" y1="16" x2="112" y2="112" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#00F0FF" />
+            <stop offset="100%" stop-color="#FF2E88" />
+          </linearGradient>
+        </defs>
+        <path d="M64 16 L24 32 L24 64 C24 88 40 108 64 116 C88 108 104 88 104 64 L104 32 Z" fill="none" stroke="url(#shieldGrad)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="64" cy="56" r="16" fill="none" stroke="#fff" stroke-width="8"/>
+        <line x1="75" y1="67" x2="88" y2="80" stroke="#fff" stroke-width="8" stroke-linecap="round"/>
+      </svg>
+      <span>AI Phishing Defense</span>
+    </div>
+    <button id="settingsBtn" aria-label="Open Settings" title="Settings">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+    </button>
+  </div>
+  
+  <div class="view-container">
+    <!-- VIEW: SCANNER -->
+    <div class="content tab-view active" id="view-scanner">
+      <div class="status-card safe" id="statusCard" aria-live="polite">
+        <div class="status-icon">
+          <svg id="statusIconSvg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <div class="status-text">
+          <h3 id="statusTitle">All Clear</h3>
+          <p id="statusDesc">Current page appears safe.</p>
+        </div>
+      </div>
+      
+      <div class="stats-grid">
+        <div class="stat-box" tabindex="0" aria-label="Total sites scanned">
+          <span class="stat-num" id="scannedCount">...</span>
+          <span class="stat-label">Scanned</span>
+        </div>
+        <div class="stat-box" tabindex="0" aria-label="Total threats blocked">
+          <span class="stat-num danger-text" id="blockedCount">...</span>
+          <span class="stat-label">Threats</span>
+        </div>
+      </div>
+
+      <div class="manual-scanner-section">
+        <div class="scanner-label">Scan a URL manually</div>
+        <div class="manual-scan-input-group">
+          <input type="text" id="manualUrlInput" class="settings-input" placeholder="https://example.com" style="flex:1;">
+          <button class="btn btn-primary btn-sm" id="manualUrlBtn" style="padding: 0 16px;">Scan</button>
+        </div>
+        <div id="manualScanResult" class="inline-scan-result hidden" aria-live="polite">
+          <!-- Result injected here -->
+        </div>
+      </div>
+
+      <div class="qr-scanner-section" style="margin-top: 1rem;">
+        <div class="scanner-label">Upload QR Code for Scan</div>
+        <button class="viewfinder" id="qrDropzone" aria-label="Upload QR code image">
+          <input type="file" id="qrUploadInput" accept="image/*" hidden tabindex="-1">
+          <svg class="qr-placeholder" viewBox="0 0 100 100" fill="currentColor" aria-hidden="true">
+            <path d="M5 5h30v30H5V5zm6 6v18h18V11H11zM65 5h30v30H65V5zm6 6v18h18V11H71zM5 65h30v30H5V65zm6 6v18h18V71H11zM45 15h10v10H45zM55 30h10v10H55zM65 55h10v10H65zM50 70h10v10H50z"/>
+          </svg>
+          <div class="scan-line hidden" id="scanLine" aria-hidden="true"></div>
+        </button>
+      </div>
+
+      <div class="actions">
+        <button class="btn btn-primary" id="manualScanBtn">
+          <svg class="scan-mascot" viewBox="0 0 32 32" aria-hidden="true">
+            <rect x="8" y="10" width="16" height="14" fill="#00F0FF"/>
+            <rect x="10" y="12" width="4" height="4" fill="#fff"/>
+            <rect x="18" y="12" width="4" height="4" fill="#fff"/>
+            <rect x="12" y="12" width="2" height="2" fill="#000"/>
+            <rect x="20" y="12" width="2" height="2" fill="#000"/>
+            <rect x="14" y="20" width="4" height="2" fill="#fff"/>
+          </svg>
+          <span id="manualScanText">Force Rescan Tab</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- VIEW: SESSION -->
+    <div class="content tab-view" id="view-session">
+      <div class="list-header" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+        <div class="section-title" style="margin-bottom: 0;">Current Session</div>
+        <div style="font-size: 0.75rem; color: var(--text-muted); background: rgba(0, 240, 255, 0.1); padding: 8px; border-radius: 4px; border-left: 2px solid #00F0FF; width: 100%;">
+          These scan lists are temporary, private to this browser session, and will be cleared when the browser closes.
+        </div>
+      </div>
+      
+      <div class="list-tabs">
+        <button class="list-tab active" data-target="list-flagged">Flagged (<span id="count-flagged">0</span>)</button>
+        <button class="list-tab" data-target="list-non_flagged">Non-Flagged (<span id="count-non_flagged">0</span>)</button>
+      </div>
+      
+      <div class="list-controls">
+        <input type="text" id="listSearch" class="settings-input list-search" placeholder="Search domains...">
+      </div>
+      
+      <div class="history-list" id="customListContainer">
+        <!-- List items injected here -->
+      </div>
+      
+      <div style="margin-top: 1rem; text-align: center; display: flex; gap: 8px;">
+        <button class="btn btn-sm" id="clearListBtn" style="flex: 1; color: var(--text-main); background: rgba(255, 255, 255, 0.1);">Clear View</button>
+        <button class="btn btn-sm" id="clearAllSessionBtn" style="flex: 1; color: var(--status-danger); background: rgba(255, 56, 96, 0.1);">Clear All Session Data</button>
+      </div>
+    </div>
+
+    <!-- VIEW: ABOUT -->
+    <div class="content tab-view" id="view-about">
+      <div class="section-title">How It Works</div>
+      <div class="about-card">
+        <h4>Simultaneous Hybrid AI</h4>
+        <p>This extension runs two separate AI engines at the exact same time to protect citizens from emerging online threats.</p>
+        
+        <div class="engine-badge">
+          <strong>1. Local Math AI</strong>
+          <span>Instantaneous offline scoring using statistical weights generated from the Kaggle Phishing Dataset.</span>
+        </div>
+        
+        <div class="engine-badge">
+          <strong>2. Cloud API</strong>
+          <span>Deep contextual analysis of page text, links, and forms via a connected cloud model.</span>
+        </div>
+        
+        <p class="protection-text">If either AI detects an anomaly, the site is immediately flagged. AI Phishing Defense actively shields users against zero-day phishing, credential harvesting, and deceptive lookalike domains.</p>
+      </div>
+    </div>
+
+    <!-- VIEW: SETTINGS -->
+    <div class="content tab-view" id="view-settings">
+      <div class="section-title">Configuration</div>
+      <div class="settings-group">
+        <label style="display:block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-main);">VirusTotal API Key</label>
+        <p style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;">Enter your VirusTotal API Key. It will be proxied securely through the backend.</p>
+        <div style="display: flex; gap: 8px;">
+          <input type="password" id="apiKeyInput" class="settings-input" placeholder="Enter secret here..." style="flex:1;">
+          <button class="btn btn-sm" id="toggleKeyBtn" title="Toggle visibility" style="width: auto; padding: 0 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+          </button>
+        </div>
+      </div>
+      <div class="settings-help">Used for Layer 2 Reputation Analysis.</div>
+        <div class="settings-actions">
+          <button class="btn btn-primary" id="saveSettingsBtn" style="padding: 0.5rem 1rem; width: auto;">Save</button>
+          <button class="btn" id="clearKeyBtn" style="padding: 0.5rem 1rem; width: auto; background: rgba(255,255,255,0.1); color: var(--text-main);">Clear</button>
+          <span id="settingsMsg" class="settings-msg">Saved!</span>
+        </div>
+      
+      <!-- Whitelist removed per new Custom Safe List architecture -->
+      
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <button class="nav-btn active" data-target="view-scanner">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+      <span>Scan</span>
+    </button>
+    <button class="nav-btn" data-target="view-session">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+      <span>Session</span>
+    </button>
+    <button class="nav-btn" data-target="view-about">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <span>About</span>
+    </button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
