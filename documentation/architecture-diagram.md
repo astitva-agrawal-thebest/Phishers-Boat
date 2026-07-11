@@ -19,8 +19,8 @@ graph TD
             PU[Popup UI] <--->|User actions & status| BS
         end
         
-        BS -->|Manages| SS1[Session Storage<br/>(temporary lists)]
-        BS -->|Manages| LS1[Local Storage<br/>(settings & API key)]
+        SS1["Session Storage (temporary lists)"]
+        LS1["Local Storage (settings & API key)"]
         BS -->|Updates| TB[Toolbar Badge]
     end
     
@@ -31,7 +31,7 @@ graph TD
     %% Backend Layer
     subgraph Server[Backend Server]
         direction TB
-        ES[Express Server] -->|Routes to| EP[/api/url-reputation Endpoint]
+        ES[Express Server] -->|Routes to| EP["/api/url-reputation Endpoint"]
         EP -->|Validates| RV[Request Validator]
         RV -->|Proxy to| VT[VirusTotal Client]
         VT -->|HTTPS API| VTAPI[VirusTotal API]
@@ -43,13 +43,13 @@ graph TD
     end
     
     %% Styling
-    classDef component fill:#f9f9f0,stroke:#333,stroke-width=1px;
-    classDef storage fill:#e6f7ff,stroke:#1890ff,stroke-width=1px;
-    classDef ui fill:#fff7e6,stroke:#d9ad33,stroke-width=1px;
-    classDef server fill:#f6ffed,stroke:#52c41a,stroke-width=1px;
-    classDef external fill:#fff1f0,stroke:#ff4d4f,stroke-width=1px;
+    classDef component fill:#f9f9f0,stroke:#333,stroke-width:1px
+    classDef storage fill:#e6f7ff,stroke:#1890ff,stroke-width:1px
+    classDef ui fill:#fff7e6,stroke:#d9ad33,stroke-width:1px;
+    classDef server fill:#f6ffed,stroke:#52c41a,stroke-width:1px;
+    classDef external fill:#fff1f0,stroke:#ff4d4f,stroke-width:1px;
     
-    class CS1,CS2,BS,PU,TB component;
+    class CS1,CS2,BS,TB component;
     class SS1,LS1 storage;
     class PU ui;
     class ES,EP,RV,VT,RF server;
