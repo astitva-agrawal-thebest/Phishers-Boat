@@ -132,9 +132,9 @@ To see the extension in action:
 - Update the extension's `BACKEND_URL` in `background/reputationClient.js` to point to your deployed instance
 
 ## Team
-- [Your Name] - Lead Developer
-- [Your Name] - Security Researcher
-- [Your Name] - Full Stack Engineer
+- Astitva Agrawal
+- Aditya Rai
+- Aryan Kumar
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE](documentation/license.md) file for details.
